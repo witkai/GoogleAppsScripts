@@ -27,15 +27,15 @@ function onOpen() {
 function showImdbSummary() {
   var sheet = SpreadsheetApp.getActive().getSheets()[0];
   var movieTitle = SpreadsheetApp.getActiveRange().getValue();
- 
+  // get movie from feed
   getMovieFromImdb(movieTitle);
-  	
+  // UI
   var app = UiApp.createApplication();
   app.setTitle("IMDP Summary");
-  app.setHeight(530);
-  app.setWidth(600);
+  app.setHeight(900);
+  app.setWidth(900);
   // details
-  var grid = app.createGrid(11,2);
+  var grid = app.createGrid(12,2);
   grid.setCellPadding(3);
   var row = 0;
   grid.setWidget(row, 0, app.createLabel("Title:"));
@@ -61,6 +61,9 @@ function showImdbSummary() {
   row += 1;
   grid.setWidget(row, 0, app.createLabel("Rating:"));
   grid.setWidget(row, 1, app.createLabel(rating));
+  row += 1;
+  grid.setWidget(row, 0, app.createLabel("Votes:"));
+  grid.setWidget(row, 1, app.createLabel(votes));
   row += 1;
   grid.setWidget(row, 0, app.createLabel("Plot:"));
   grid.setWidget(row, 1, app.createLabel(plot));
@@ -106,10 +109,10 @@ function getMovieFromImdb(title) {
     year = result.Year;
     rated = result.Rated;
     actors = result.Actors;
-    votes = result.Votes;
+    votes = result.imdbVotes;
     plot = result.Plot;
     writer = result.Writer;
-    rating = result.Rating;
+    rating = result.imdbRating;
     genre = result.Genre;
     imdbId = result.ID;
     director = result.Director;
@@ -131,9 +134,22 @@ function closeApp() {
  */
 function updateMovie() {
   var sheet = SpreadsheetApp.getActive().getSheets()[0];
-  var movieRow = SpreadsheetApp.getActiveRange().getRow();
+  // the row of the current movie
+  var row = SpreadsheetApp.getActiveRange().getRow();
   // write data to cells
-  updateValue(sheet, movieRow, 10, runtime);
+  updateValue(sheet, row, 8, rating);
+  updateValue(sheet, row, 9, released);
+  updateValue(sheet, row, 10, runtime);
+  updateValue(sheet, row, 11, genre);
+  updateValue(sheet, row, 12, year);
+  updateValue(sheet, row, 13, rated);
+  updateValue(sheet, row, 14, actors);
+  updateValue(sheet, row, 15, votes);
+  updateValue(sheet, row, 16, plot);
+  updateValue(sheet, row, 17, writer);
+  updateValue(sheet, row, 18, director);
+  updateValue(sheet, row, 19, posterUrl);
+  updateValue(sheet, row, 20, imdbId);
 }   
 
 /**
@@ -146,4 +162,3 @@ function updateMovie() {
 function updateValue(sheet, row, column, value) {
   sheet.getDataRange().getCell(row, column).setValue(value);
 }
-
